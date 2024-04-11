@@ -1,8 +1,8 @@
-const cartSchema = require('../Model/CartModel')
+const Cart = require('../Model/CartModel')
 
 const createCart = (req, res) =>{
-    const cart = new cartSchema(req.body)
-    cart.save()
+    let Data = new Cart(req.body)
+    Data.save()
     .then(()=>{
         res.send({message: 'Cart created successfully'})
     })
@@ -13,7 +13,7 @@ const createCart = (req, res) =>{
 }
 
 const readCart = (req, res) =>{
-    cartSchema.find()
+    Cart.find().populate("ProductId")
     .then((cart)=>{
         res.send(cart)
     })
@@ -24,8 +24,8 @@ const readCart = (req, res) =>{
 }
 
 const updateCart = (req, res) =>{
-    const id = req.params.id
-    cartSchema.findByIdAndUpdate(id, req.body)
+    const _id = req.params.id
+    Cart.findByIdAndUpdate(_id, req.body)
     .then(()=>{
         res.send({message: 'Cart updated successfully'})
     })
@@ -36,8 +36,8 @@ const updateCart = (req, res) =>{
 }
 
 const deleteCart = (req, res) =>{
-    const id = req.params.id
-    cartSchema.findByIdAndDelete(id)
+    const _id = req.params.id
+    Cart.findByIdAndDelete(_id)
     .then(()=>{
         res.send({message: 'Cart deleted successfully'})
     })

@@ -1,4 +1,4 @@
-const {product, productJoi} = require('../Model/ProductModel')
+const {product, productJoi, productUpdateJoi} = require('../Model/ProductModel')
 
 const createProduct = (req,res) =>{
     const {error, value}=productJoi.validate(req.body)
@@ -21,9 +21,9 @@ const createProduct = (req,res) =>{
 }
 
 const readProduct = (req,res) =>{
-    product.find({isDelete:false})
-    .then((products) => {
-        res.send({message:"User Read Successfully",products})
+    product.find({isDeleted:false})
+    .then((resp) => {
+        res.send({message:"Products Read Successfully",resp})
     })
     .catch((err) => {
         console.log(err)
@@ -32,29 +32,40 @@ const readProduct = (req,res) =>{
 }
 
 const updateProduct = (req,res) =>{
-    product.findOne({ProductName:req.body.ProductName})
-    .then((value) => {
-        if(value){
-            product.updateOne({ProductName:req.body.ProductName}, req.body)
-            .then(() => {
-                 res.send({message:"Product Updated Successfully"})
-             })
-            .catch((err) => {
-                 console.log(err)
-                 res.send({message:"Error Occur In Updating Product"})
-             })
-        }
-        else{
-            res.send({message:"Product Not Found"})
-        }
-    })
+    const {error, value}=productUpdateJoi.validate(req.body)
+    if(error){
+        console.log(error)
+        res.send({message:"Error In Validating Product Info"})
+    }
+    else{
+        product.findOne({ProductName:req.query.ProductName, isDeleted:false})
+        .then((resp) => {
+            if(resp){
+                product.updateOne(resp, value)
+                .then(() => {
+                     res.send({message:"Product Updated Successfully"})
+                 })
+                .catch((err) => {
+                     console.log(err)
+                     res.send({message:"Error Occur In Updating Product"})
+                 })
+            }
+            else{
+                res.send({message:"Product Not Found"})
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+            res.send({message:"No Such Product Found"})
+        })
+    }
 }
 
 const deleteProduct = (req,res) =>{
-    product.findOne({ProductName:req.body.ProductName})
-    .then((value) => {
-        if(value){
-            product.updateOne({ProductName:req.body.ProductName}, {isDelete:true})
+    product.findOne({ProductName:req.query.ProductName, isDeleted:false})
+    .then((resp) => {
+        if(resp){
+            product.updateOne(resp, {isDeleted:true})
             .then(() => {
                  res.send({message:"Product Deleted Successfully"})
              })

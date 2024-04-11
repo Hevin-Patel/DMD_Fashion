@@ -15,4 +15,4 @@ let cartSchema=mongoose.Schema({
     }
 })
 
-module.exports = cartSchema
+module.exports = mongoose.model('Cart', cartSchema)

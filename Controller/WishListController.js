@@ -1,8 +1,8 @@
-const wishListSchema = require('../Model/WishListModel')
+const WishList = require('../Model/WishListModel')
 
 const createWishList = (req, res) =>{
-    const newWishList=new wishListSchema(req.body)
-    newWishList.save()
+    let Data = new WishList(req.body)
+    Data.save()
     .then(()=>{
         res.send({message : "Wish List saved successfully"})
     })
@@ -13,9 +13,9 @@ const createWishList = (req, res) =>{
 }
 
 const readWishList = (req, res) =>{
-    wishListSchema.find().populate("ProductId")
-   .then((product) => {
-        res.send(product)
+    WishList.find().populate("ProductId")
+   .then((resp) => {
+        res.send(resp)
    })
    .catch((err) => {
         console.log(err)
@@ -24,10 +24,11 @@ const readWishList = (req, res) =>{
 }
 
 const deleteWishList = (req, res) =>{
-    wishListSchema.findOne({_id:req.params.id})
-    .then((product) => {
-        if(product){
-            wishListSchema.deleteOne({_id:req.params.id})
+    let _id = req.params.id
+    WishList.findById(_id)
+    .then((resp) => {
+        if(resp){
+            WishList.findByIdAndDelete(_id)
             .then(()=>{
                 res.send({message : "Wish List deleted successfully"})
             })
@@ -36,6 +37,13 @@ const deleteWishList = (req, res) =>{
                 res.send({message :"Error deleting wish list"})
             })
         }
+        else{
+            res.send({message : "Wish List does not exist"})
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+        res.send({message :"Error deleting wish list"})
     })
 }
 

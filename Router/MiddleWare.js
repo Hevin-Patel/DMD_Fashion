@@ -8,6 +8,9 @@ let MW=(req,res,next)=>{
             if(correctToken){
                 next()
             }
+            else{
+                res.send({message: "User Not Logged In"})
+            }
         }
         catch(err){
             res.send({err:err})

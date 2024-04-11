@@ -7,6 +7,6 @@ const router = express.Router()
 
 router.post('/createWishList', createWishList)
 router.get('/readWishList', readWishList)
-router.post('/deleteWishList', deleteWishList)
+router.post('/deleteWishList/:id', deleteWishList)
 
 module.exports = router
