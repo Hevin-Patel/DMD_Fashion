@@ -29,9 +29,21 @@ const createOrder = async(req,res) => {
     })
 }
 
-const readOrder = (req, res) => {
-    order.find()
-   .then((resp) => {
+const readOrder = async(req, res) => {
+   order.find()
+   .then(async (resp) => {
+        let ProductDetails = []
+        let ProductIds=resp[0].Order
+        for (let i of ProductIds) {
+            await product.findOne({_id:i.ProductId})
+            .then((response)=>{
+                ProductDetails.push(response)
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        }
+        console.log(ProductDetails)
         res.send(resp)
    })
    .catch((err) => {
